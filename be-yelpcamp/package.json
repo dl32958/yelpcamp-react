@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cros": "^1.0.1",
+    "express": "^4.21.2",
+    "mongoose": "^8.8.4"
+  },
+  "scripts": {
+    "dev": "nodemon app.js"
+  }
+}
