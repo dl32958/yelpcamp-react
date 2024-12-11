@@ -18,11 +18,18 @@ const CampgroundList = () => {
 
     return (
         <div>
-            <h1>Campground List</h1>
+            <h1>All Campgrounds</h1>
+            <a href="/new">Add New Campground</a>
             <ul>
-                {campgrounds.map((campground, index) => (
-                    <li key={index}>{campground.title}</li>
-                ))}
+                {campgrounds.length? (
+                    campgrounds.map((campground, index) => (
+                        <li key={index}>
+                            <a href={`/campground/${campground._id}`}>{campground.title}</a>
+                        </li>
+                    ))
+                ) : (
+                    <h2>No data</h2>
+                )}
             </ul>
         </div>
     )
