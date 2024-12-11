@@ -5,6 +5,7 @@ import LandingPage from './components/LandingPage';
 import Show from './components/Campgrounds/Show';
 import New from './components/Campgrounds/New';
 import Edit from './components/Campgrounds/Edit';
+import Boilerplate from './components/partials/Boilerplate';
 
 function App() {
 
@@ -12,10 +13,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/campgrounds" element={<CampgroundList />} />
-        <Route path="/campground/:id" element={<Show />} />
-        <Route path="/campground/:id/edit" element={<Edit />} />
-        <Route path="/new" element={<New />} />
+        <Route element={<Boilerplate />}>
+          <Route path="/campgrounds" element={<CampgroundList />} />
+          <Route path="/campground/:id" element={<Show />} />
+          <Route path="/campground/:id/edit" element={<Edit />} />
+          <Route path="/new" element={<New />} />
+        </Route>
       </Routes>
     
     </BrowserRouter>

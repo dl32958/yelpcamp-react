@@ -18,14 +18,29 @@ const CampgroundList = () => {
 
     return (
         <div>
-            <h1>All Campgrounds</h1>
-            <a href="/new">Add New Campground</a>
             <ul>
-                {campgrounds.length? (
+                <h1>All Campgrounds</h1>
+                {campgrounds.length ? (
                     campgrounds.map((campground, index) => (
-                        <li key={index}>
-                            <a href={`/campground/${campground._id}`}>{campground.title}</a>
-                        </li>
+                        <div className="card mb-3" key={index}>
+                            <div className='row'>
+                                <div className="col-md-4">
+                                    <img src={campground.image} alt="" className="img-fluid" />
+                                </div>
+                                <div className="col-md-8">
+                                    <div className="card-body">
+                                        <h5 className='card-title'>{campground.title}</h5>
+                                        <p className='card-text'>{campground.description}</p>
+                                        <p className='card-text'>
+                                            <small className="text-muted">
+                                                {campground.location}
+                                            </small>
+                                        </p>
+                                        <a href={`/campground/${campground._id}`} className='btn btn-primary'>Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ))
                 ) : (
                     <h2>No data</h2>
