@@ -2,78 +2,138 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { campgroundSchema } from '../../utils/Validation';
+import { getClassName } from '../../utils/GetClassName';
 
 const Edit = () => {
     const navigate = useNavigate();
     const [campground, setCampground] = useState(undefined);
     const { id } = useParams();   // campground id
 
+    // setValue hook is used to set the value of the input field
+    const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
+        // resolver: yupResolver(campgroundSchema),
+        mode: "onBlur",
+    });
+
     useEffect(() => {
         const fetchCampground = async () => {
-            const response = await axios.get(`/api/campgrounds/${id}`);
-            setCampground(response.data.campground);
+            try{
+                const response = await axios.get(`/api/campgrounds/${id}`);
+                const campgroundData = response.data.campground;
+                setCampground(campgroundData);
+
+                setValue('title', campgroundData.title);
+                setValue('location', campgroundData.location);
+                setValue('image', campgroundData.image);
+                setValue('price', campgroundData.price);
+                setValue('description', campgroundData.description);
+            } catch (e) {
+                console.error(e);
+            }
         };
         fetchCampground();
     }, []);
 
-    const onFormSubmit = async (e) => {
-        e.preventDefault()
-        const campground = {
-            title: e.target[0].value,
-            location: e.target[1].value,
-            image: e.target[2].value,
-            price: e.target[3].value,
-            description: e.target[4].value,
-        }
-        // console.log(id)
+    const onFormSubmit = async (data) => {
+        const campground = {...data};
         try {
-            const response = await axios.post(`/api/campgrounds/${id}/update`, campground);
+            const response = await axios.post(`/api/campgrounds/${id}/update`, {campground});
             if (response.status === 200) {
                 navigate(`/campground/${response.data}`);
-            } else {
-                console.error('Unexpected status code:', response.status);
             }
         } catch (e) {
-            console.error(e);
+            const mainError = JSON.parse(JSON.stringify(e));
+            const response = JSON.parse(JSON.stringify(e.response));
+            // if front-end validation not work, back-end validation will catch it, and redirect to a error page
+            navigate('/error', {state: {mainError, response}});
         }
+    }
+
+    const EditForm = () => {
+        return (
+            <form onSubmit={handleSubmit(onFormSubmit)}>
+                <div className='mb-3'>
+                    <label className='form-label' htmlFor="title">Title</label>
+                    <input
+                        className={getClassName(errors.title)}
+                        type="text"
+                        id="title"
+                        name='title'
+                        {...register("title")}
+                    />
+                    {errors.title && <div className="invalid-feedback">{errors.title.message}</div>}
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label' htmlFor="location">Location</label>
+                    <input
+                        className={getClassName(errors.location)}
+                        type="text"
+                        id="location"
+                        {...register("location")}
+                    />
+                    {errors.location && <div className="invalid-feedback">{errors.location.message}</div>}
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label' htmlFor="image">Image</label>
+                    <input
+                        className={getClassName(errors.image)}
+                        type="text"
+                        id="image"
+                        name='image'
+                        {...register("image")}
+                    />
+                    {errors.image && <div className="invalid-feedback">{errors.image.message}</div>}
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label' htmlFor="price">Price</label>
+                    <div className="input-group">
+                        <span className="input-group-text">$</span>
+                        <input
+                            className={getClassName(errors.price)}
+                            type="text"
+                            id="price"
+                            name='price'
+                            {...register("price")}
+                        />
+                    </div>
+                    {errors.price && <div className="invalid-feedback">{errors.price.message}</div>}
+                </div>
+                <div className="mb-3">
+                    <label className='form-label' htmlFor="description">Description</label>
+                    <textarea
+                        className={getClassName(errors.description)}
+                        type="text"
+                        id="description"
+                        name='description'
+                        {...register("description")}
+                    />
+                    {errors.description && <div className="invalid-feedback">{errors.description.message}</div>}
+                    <div className="card-body mt-3">
+                        <button className='btn btn-success me-2' disabled={!isValid}>Submit</button>
+                        <a
+                            href={`/campground/${id}`}
+                            className='card-link btn btn-secondary'
+                        >
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        )
     }
 
     return (
         <>
             {campground ? (
-            <div className='row'>
-                <h1 className='text-center'>Edit Campground</h1>
-                <div className="col-6 offset-3">
-                    <form onSubmit={onFormSubmit}>
-                        <div className="mb-3">
-                            <label className='form-label' htmlFor="title">Title</label>
-                            <input className='form-control' type="text" id="title" name="title" defaultValue={campground ? campground.title : ""} />
-                        </div>
-                        <div className="mb-3">
-                            <label className='form-label' htmlFor="location">Location</label>
-                            <input className='form-control' type="text" id="location" name="location" defaultValue={campground ? campground.location : ""} />
-                        </div>
-                        <div className="mb-3">
-                            <label className='form-label' htmlFor="image">Image</label>
-                            <input className='form-control' type="text" id="image" name="image" defaultValue={campground ? campground.image : ""} />
-                        </div>
-                        <div className="mb-3">
-                            <label className='form-label' htmlFor="price">Price</label>
-                            <div className="input-group">
-                                <span className="input-group-text">$</span>
-                                <input className='form-control' type="text" id="price" name="price" defaultValue={campground ? campground.price : ""} />
-                            </div>
-                        </div>
-                        <div className="mb-3">
-                            <label className='form-label' htmlFor="description">Description</label>
-                            <textarea className='form-control' type="text" id="description" name="description" defaultValue={campground ? campground.description : ""} />
-                        </div>
-                        <div className='mb-3'>
-                            <button className='btn btn-success me-2'>Update</button>
-                        </div>
-                    </form>
+                <div className='row'>
+                    <h1 className='text-center'>Edit Campground</h1>
+                    <div className="col-6 offset-3">
+                        <EditForm />
+                    </div>
                 </div>
-            </div>
             ) : (null)}
         </>
     )
