@@ -6,6 +6,7 @@ import Show from './components/Campgrounds/Show';
 import New from './components/Campgrounds/New';
 import Edit from './components/Campgrounds/Edit';
 import Boilerplate from './components/partials/Boilerplate';
+import ErrorPage from './components/partials/ErrorPage';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/campground/:id" element={<Show />} />
           <Route path="/campground/:id/edit" element={<Edit />} />
           <Route path="/new" element={<New />} />
+          <Route path="/error" element={<ErrorPage />} />
         </Route>
       </Routes>
     
