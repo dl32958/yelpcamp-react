@@ -14,7 +14,7 @@ const Edit = () => {
 
     // setValue hook is used to set the value of the input field
     const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
-        // resolver: yupResolver(campgroundSchema),
+        resolver: yupResolver(campgroundSchema),
         mode: "onBlur",
     });
 
@@ -109,6 +109,7 @@ const Edit = () => {
                         id="description"
                         name='description'
                         {...register("description")}
+                        rows="5"
                     />
                     {errors.description && <div className="invalid-feedback">{errors.description.message}</div>}
                     <div className="card-body mt-3">

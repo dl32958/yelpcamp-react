@@ -15,7 +15,8 @@ const New = () => {
 
     const onFormSubmit = async (data) => {
         try {
-            const response = await axios.post('/api/campgrounds/new', data);
+            const playload = { campground: { ...data } };
+            const response = await axios.post('/api/campgrounds/new', playload);
             if (response.status === 200) {
                 navigate(`/campground/${response.data}`);
             } else {
@@ -83,17 +84,18 @@ const New = () => {
                         id="description"
                         name='description'
                         {...register("description")}
+                        rows="5"
                     />
                     {errors.description && <div className="invalid-feedback">{errors.description.message}</div>}
-                    <div className="card-body mt-3">
-                        <button className='btn btn-success me-2' disabled={!isValid}>Submit</button>
-                        <a
-                            href="/campgrounds"
-                            className='card-link btn btn-secondary'
-                        >
-                            Cancel
-                        </a>
-                    </div>
+                </div>
+                <div className="card-body mt-3">
+                    <button className='btn btn-success me-2' disabled={!isValid}>Submit</button>
+                    <a
+                        href="/campgrounds"
+                        className='card-link btn btn-secondary'
+                    >
+                        Cancel
+                    </a>
                 </div>
             </form>
         )

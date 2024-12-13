@@ -15,3 +15,13 @@ export const campgroundSchema = Yup.object().shape({
   description: Yup.string()
     .required("Description is required"),
 });
+
+export const reviewSchema = Yup.object().shape({
+  rating: Yup.number()
+    .typeError("Rating must be a number")
+    .required("Rating is required")
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating must be at most 5"),
+  body: Yup.string()
+    .required("Review is required"),
+});
