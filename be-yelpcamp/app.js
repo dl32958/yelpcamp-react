@@ -1,10 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import Campground from './models/campground.js';
+import Campground from './models/Campground.js';
+import Review from './models/Review.js';
 import cors from 'cors';
 import CatchAsync from './utils/CatchAsync.js';
 import ExpressError from './utils/ExpressError.js';
-import { campgroundSchema } from './schemas.js';
+import { campgroundSchema, reviewSchema } from './schemas.js';
 
 const app = express();
 const corsOptions = {
@@ -30,7 +31,15 @@ const validateCampground = (req, res, next) => {
         next();
     }
 };
-
+const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+};
 
 app.get('/campgrounds', async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -40,13 +49,29 @@ app.get('/campgrounds', async (req, res) => {
 // req.params -> {id: 'xxx'}
 app.get('/campgrounds/:id', CatchAsync(async (req, res) => {
     // const {id} = req.params;
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findById(req.params.id).populate('reviews');  // populate reviews
+    // console.log(campground);
     res.send({campground});
 }));
 
-app.post('/campgrounds/new', validateCampground, CatchAsync(async (req, res) => {
+app.post('/campgrounds/:id/reviews', validateReview, CatchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const newReview = new Review(req.body.review);
+    campground.reviews.push(newReview);    // push new review to reviews array
+    await newReview.save();
+    await campground.save();
+    res.send({campground});
+}));
+
+app.delete('/campgrounds/:id/reviews/:reviewId', CatchAsync(async (req, res) => {
+    await Campground.findByIdAndUpdate(req.params.id, {$pull: {reviews: req.params.reviewId}});  // delete reference
+    await Review.findByIdAndDelete(req.params.reviewId);
+    res.status(200).send('review is deleted');
+}));
+
+app.post('/campgrounds/new', validateCampground, CatchAsync(async (req, res, next) => {
     // console.log(req.body);
-    const campground = new Campground(req.body);
+    const campground = new Campground(req.body.campground);
     await campground.save();
     res.send(campground._id);   // send back id
 }));
@@ -56,7 +81,7 @@ app.post('/campgrounds/:id/update', validateCampground, CatchAsync(async (req, r
     res.send(campground._id);
 }));
 
-app.delete('/campgrounds/:id', CatchAsync(async (req, res) => {
+app.delete('/campgrounds/:id/delete', CatchAsync(async (req, res) => {
     await Campground.findByIdAndDelete(req.params.id);
     res.status(200).send('deleted');
 }));
