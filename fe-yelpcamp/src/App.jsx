@@ -7,6 +7,9 @@ import New from './components/Campgrounds/New';
 import Edit from './components/Campgrounds/Edit';
 import Boilerplate from './components/partials/Boilerplate';
 import ErrorPage from './components/partials/ErrorPage';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 function App() {
 
