@@ -1,5 +1,6 @@
 import './App.css';
 import {Routes, Route, BrowserRouter} from 'react-router-dom';
+import "react-toastify/dist/ReactToastify.css";
 import CampgroundList from './components/Campgrounds/CampgroundList';
 import LandingPage from './components/LandingPage';
 import Show from './components/Campgrounds/Show';
