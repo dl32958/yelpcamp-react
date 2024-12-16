@@ -3,10 +3,10 @@ import { Outlet } from 'react-router';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-const Boilerplate = () => {
+const Boilerplate = (props) => {
   return (
     <div className='d-flex flex-column vh-100'>
-        <Navbar />
+        <Navbar {...props}/>
         <main className="container mt-5">
             <Outlet />
         </main>
