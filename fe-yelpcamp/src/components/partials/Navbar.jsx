@@ -1,6 +1,14 @@
-import React from 'react'
+import React from 'react';
+import axios from 'axios';
+import { showToast } from '../../utils/showToast';
 
-const Navbar = () => {
+const Navbar = (props) => {
+    const onLogoutClick = () => {
+        sessionStorage.removeItem('token');
+        axios.defaults.headers.common['Authorization'] = '';
+        showToast('success', 'Logout successful!');
+    };
+    // console.log(props);
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark py-3">
             <div className="container-fluid">
@@ -26,6 +34,22 @@ const Navbar = () => {
                         <a className="nav-link" href="/new">
                             New Campground
                         </a>
+                    </div>
+                    <div className="navbar-nav ms-auto">
+                        {props.user ? (
+                            <a href="#" className="nav-link" onClick={onLogoutClick}>
+                                Logout
+                            </a>
+                        ) : (
+                            <>
+                                <a className="nav-link" href="/login">
+                                    Login
+                                </a>
+                                <a className="nav-link" href="/register">
+                                    Register
+                                </a>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
