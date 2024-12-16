@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { reviewSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
+import { ToastContainer } from 'react-toastify';
+import { showToast } from '../../utils/showToast';
 
 const show = () => {
   const [campground, setCampground] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchCampground = async () => {
     const response = await axios.get(`/api/campgrounds/${id}`);
@@ -19,12 +22,30 @@ const show = () => {
 
   useEffect(() => {
     fetchCampground();
+    if (location?.state?.showToast) {
+      const { type, message } = location.state.showToast;
+      console.log(type, message);
+      showToast(type, message);
+    }
   }, []);
 
   const handleDeleteClick = async () => {
-    const response = await axios.delete(`/api/campgrounds/${id}/delete`);
-    if (response.status === 200) {
-      navigate('/campgrounds');
+    try {
+      const response = await axios.delete(`/api/campgrounds/${id}/delete`);
+      if (response.status === 200) {
+        navigate('/campgrounds', {
+          state: {
+            showToast: {
+              type: 'success',
+              message: 'Campground deleted successfully!'
+            }
+          }
+        });
+      }
+    } catch (e) {
+      const mainError = JSON.parse(JSON.stringify(e));
+      const response = JSON.parse(JSON.stringify(e.response));
+      navigate('/error', { state: { mainError, response } });
     }
   };
 
@@ -40,17 +61,29 @@ const show = () => {
   const onReviewSubmit = async (data) => {
     const playload = { review: { ...data } };
     // console.log(playload);
-    const response = await axios.post(`/api/campgrounds/${id}/reviews`, playload);
-    if (response.status === 200) {
-      // console.log(response.data);
-      fetchCampground();
-      reset();
+    try {
+      const response = await axios.post(`/api/campgrounds/${id}/reviews`, playload);
+      if (response.status === 200) {
+        // console.log(response.data);
+        fetchCampground();
+        reset();
+        console.log("response.data", response.data);
+        showToast('success', response.data ?? 'Review added successfully!');
+      }
+    } catch (e) {
+      showToast('error', e.response.data ?? 'Something went wrong');
     }
   };
+
   const handleReviewDelete = async (reviewId) => {
-    const response = await axios.delete(`/api/campgrounds/${id}/reviews/${reviewId}`);
-    if (response.status === 200) {
-      fetchCampground();
+    try {
+      const response = await axios.delete(`/api/campgrounds/${id}/reviews/${reviewId}`);
+      if (response.status === 200) {
+        fetchCampground();
+        showToast('success', response.data ?? 'Review deleted successfully!');
+      }
+    } catch (e) {
+      showToast('error', e.response.data ?? 'Something went wrong');
     }
   };
 
@@ -66,8 +99,8 @@ const show = () => {
             <div className="card-body">
               <h6 className="card-title">Rating: {review.rating}</h6>
               <p className="card-text">{review.body}</p>
-              <button 
-                className="btn btn-danger btn-sm" 
+              <button
+                className="btn btn-danger btn-sm"
                 onClick={() => handleReviewDelete(review._id)}
               >
                 Delete
@@ -120,6 +153,18 @@ const show = () => {
 
   return (
     <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {campground ? (
         <>
           <div className="row">

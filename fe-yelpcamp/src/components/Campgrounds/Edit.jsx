@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { campgroundSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
+import { ToastContainer } from 'react-toastify';
+import { showToast } from '../../utils/showToast';
 
 const Edit = () => {
     const navigate = useNavigate();
@@ -20,7 +22,7 @@ const Edit = () => {
 
     useEffect(() => {
         const fetchCampground = async () => {
-            try{
+            try {
                 const response = await axios.get(`/api/campgrounds/${id}`);
                 const campgroundData = response.data.campground;
                 setCampground(campgroundData);
@@ -38,17 +40,24 @@ const Edit = () => {
     }, []);
 
     const onFormSubmit = async (data) => {
-        const campground = {...data};
+        const campground = { ...data };
         try {
-            const response = await axios.post(`/api/campgrounds/${id}/update`, {campground});
+            const response = await axios.post(`/api/campgrounds/${id}/update`, { campground });
             if (response.status === 200) {
-                navigate(`/campground/${response.data}`);
+                navigate(`/campground/${response.data}`, {
+                    state: {
+                        showToast: {
+                            type: 'success',
+                            message: 'Campground updated successfully!',
+                        }
+                    }
+                });
             }
         } catch (e) {
             const mainError = JSON.parse(JSON.stringify(e));
             const response = JSON.parse(JSON.stringify(e.response));
             // if front-end validation not work, back-end validation will catch it, and redirect to a error page
-            navigate('/error', {state: {mainError, response}});
+            navigate('/error', { state: { mainError, response } });
         }
     }
 
@@ -128,6 +137,17 @@ const Edit = () => {
 
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             {campground ? (
                 <div className='row'>
                     <h1 className='text-center'>Edit Campground</h1>

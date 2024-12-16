@@ -1,29 +1,52 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { campgroundSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
+import { ToastContainer } from 'react-toastify';
+import { showToast } from '../../utils/showToast';
 
 const New = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location?.state?.showToast) {
+            const { type, message } = location.state.showToast;
+            showToast(type, message);
+        }
+    }, []);
+
     const { register, handleSubmit, formState: { errors, isValid } } = useForm({
         resolver: yupResolver(campgroundSchema),
         mode: "onBlur",
     });
 
     const onFormSubmit = async (data) => {
+        console.log(data);
         try {
             const playload = { campground: { ...data } };
             const response = await axios.post('/api/campgrounds/new', playload);
             if (response.status === 200) {
-                navigate(`/campground/${response.data}`);
+                // if create success, redirect and add state to showToast
+                navigate(`/campground/${response.data}`, {
+                    replace: true,
+                    state: {
+                        showToast: {
+                            type: 'success',
+                            message: 'Campground added successfully!',
+                        }
+                    }
+                });
             } else {
                 console.error('Unexpected status code:', response.status);
             }
         } catch (e) {
-            console.error('Error occurred while posting data:', e);
+            const mainError = JSON.parse(JSON.stringify(e));
+            const response = JSON.parse(JSON.stringify(e.response));
+            navigate('/error', { state: { mainError, response } });
         }
     }
 
@@ -103,6 +126,17 @@ const New = () => {
 
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className='row'>
                 <h1 className='text-center'>Add Campground</h1>
                 <div className="col-6 offset-3">

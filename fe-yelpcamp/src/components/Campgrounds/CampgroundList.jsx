@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
+import { showToast } from '../../utils/showToast';
 
 const CampgroundList = () => {
     const [campgrounds, setCampgrounds] = useState([]);
+    const location = useLocation();
+
     useEffect(() => {
         const fetchCampgrounds = async () => {
             try {
@@ -14,10 +19,26 @@ const CampgroundList = () => {
             }
         };
         fetchCampgrounds();
+        if (location?.state?.showToast) {
+            const { type, message } = location.state.showToast;
+            // console.log(type, message);
+            showToast(type, message);
+        }
     }, []);
 
     return (
         <div>
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <ul>
                 <h1>All Campgrounds</h1>
                 {campgrounds.length ? (
