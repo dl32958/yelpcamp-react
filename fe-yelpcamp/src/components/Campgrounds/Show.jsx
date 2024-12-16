@@ -154,7 +154,7 @@ const show = () => {
           </div>
         </>
       ) : (
-        <h1>No data</h1>
+        <h1>Sorry, this campground doesn't exist.</h1>
       )}
     </>
   )
