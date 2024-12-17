@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { showToast } from '../../utils/showToast';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const Navbar = (props) => {
+const Navbar = () => {
+    const { currentUser, setCurrentUser } = useAuth();
+    // const navigate = useNavigate();
+    // const location = useLocation();
+
     const onLogoutClick = () => {
+        // console.log(location.pathname);
         sessionStorage.removeItem('token');
         axios.defaults.headers.common['Authorization'] = '';
+        setCurrentUser(null);
         showToast('success', 'Logout successful!');
+        navigate("/campgrounds", { replace: true });
     };
-    // console.log(props);
+
+    // useEffect(() => {
+    //     console.log('currentUser updated:', currentUser);
+    // }, [currentUser]);
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark py-3">
             <div className="container-fluid">
@@ -36,8 +48,8 @@ const Navbar = (props) => {
                         </a>
                     </div>
                     <div className="navbar-nav ms-auto">
-                        {props.user ? (
-                            <a href="#" className="nav-link" onClick={onLogoutClick}>
+                        {currentUser ? (
+                            <a className="nav-link" href="#" onClick={onLogoutClick}>
                                 Logout
                             </a>
                         ) : (

@@ -7,12 +7,15 @@ import { registerSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
 import { ToastContainer } from 'react-toastify';
 import { showToast } from '../../utils/showToast';
+import { useAuth } from '../../context/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 const Register = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const path = location.state?.from ?? '/campgrounds';
     console.log(path);
+    const { setCurrentUser } = useAuth();
 
     useEffect(() => {
         if (location?.state?.showToast) {
@@ -34,9 +37,10 @@ const Register = () => {
             const response = await axios.post('/api/users/register', payload);
             if (response.status === 200) {
                 const {token} = response.data;
-                console.log(token);
                 sessionStorage.setItem('token', token);
-                // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                const user = jwtDecode(token);
+                setCurrentUser(user);
                 navigate(path, {
                     state: {
                         showToast: {

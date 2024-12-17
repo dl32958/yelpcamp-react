@@ -8,11 +8,15 @@ import { campgroundSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
 import { ToastContainer } from 'react-toastify';
 import { showToast } from '../../utils/showToast';
+import { useAuth } from '../../context/AuthContext';
 
 const Edit = () => {
+    // const { currentUser, checkInProgress } = useAuth();
+    const [campground, setCampground] = useState(null);
+    console.log(campground);
     const navigate = useNavigate();
-    const [campground, setCampground] = useState(undefined);
     const { id } = useParams();   // campground id
+    // console.log(currentUser);
 
     // setValue hook is used to set the value of the input field
     const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
@@ -37,7 +41,7 @@ const Edit = () => {
             }
         };
         fetchCampground();
-    }, []);
+    }, [id]);
 
     const onFormSubmit = async (data) => {
         const campground = { ...data };
