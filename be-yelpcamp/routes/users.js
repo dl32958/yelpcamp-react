@@ -2,7 +2,6 @@ import express from 'express';
 import User from '../models/User.js';
 import CatchAsync from '../utils/CatchAsync.js';
 import ExpressError from '../utils/ExpressError.js';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
@@ -16,9 +15,7 @@ router.post('/register', CatchAsync(async (req, res) => {
         if (existingUser) {
             throw new ExpressError('User already exists!', 409);
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ email, password: hashedPassword });
+        const newUser = new User({ email, password });
         await newUser.save();
 
         const token = jwt.sign({ id: newUser._id, email: newUser.email }, JWT_SECRETE, { expiresIn: '1h' });
@@ -26,10 +23,10 @@ router.post('/register', CatchAsync(async (req, res) => {
         res.status(200).json({
             message: 'Login successful!',
             token,
-            user: {
-                id: newUser._id,
-                email: newUser.email
-            }
+            // user: {
+            //     id: newUser._id,
+            //     email: newUser.email
+            // }
         })
     } catch (e) {
         throw new ExpressError(e.message, 409);
@@ -40,24 +37,22 @@ router.post('/login', CatchAsync(async (req, res) => {
     console.log(req.body);
     const { email, password } = req.body.user;
     const user = await User.findOne({ email: email });
-    console.log(user);
     if (!user) {
-        throw new ExpressError('Invalid username or password', 401);
+        throw new ExpressError('Invalid email or password!', 401);
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
-    if (!isMatch) {
-        throw new ExpressError('Invalid username or password', 401);
+    const isValid = await user.comparePassword(password);
+    if (!isValid) {
+        throw new ExpressError('Invalid email or password!', 401);
     }
 
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRETE, { expiresIn: '1h' });
     res.status(200).json({
         message: 'Login successful!',
         token,
-        user: {
-            id: user._id,
-            email: user.email
-        }
+        // user: {
+        //     id: user._id,
+        //     email: user.email
+        // }
     })
 }));
 
