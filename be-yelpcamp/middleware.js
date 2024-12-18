@@ -29,7 +29,7 @@ export const isAuthor = async (req, res, next) => {
         if (!campground.author.equals(req.user.id)) {
             return res.status(401).send("You don't have permission to do that!");
         } 
-        nest();
+        next();
     } catch (e) {
         console.error("isAuthor Error:", e.message);
         return res.status(500).send('Internal Server Error');

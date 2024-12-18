@@ -30,7 +30,7 @@ router.get('/:id', CatchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
         .populate({path: "reviews", populate:{path: "author"}})      // populate reviews
         .populate("author");
-    console.log(campground);
+    console.log("campground:", campground);
     res.send({campground});
 }));
 
@@ -45,6 +45,7 @@ router.post('/new', isLoggedIn, validateCampground, CatchAsync(async (req, res, 
 }));
 
 router.post('/:id/update', isLoggedIn, isAuthor, validateCampground, CatchAsync(async (req, res, next) => {
+    // console.log("req.body:", req.body);
     const campground = await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground});
     res.send(campground._id);
 }));

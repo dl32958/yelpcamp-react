@@ -64,7 +64,8 @@ router.get('/get-user', CatchAsync(async (req, res) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRETE);
         console.log('decoded',decoded);
-        res.status(200).send(decoded);
+        // res.status(200).send(decoded);
+        res.status(200).json({user: decoded});
     } catch (e) {
         res.status(401).send('Unauthorized');
     }
