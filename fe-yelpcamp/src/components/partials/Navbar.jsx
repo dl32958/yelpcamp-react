@@ -1,26 +1,27 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import { showToast } from '../../utils/showToast';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
     const { currentUser, setCurrentUser } = useAuth();
-    // const navigate = useNavigate();
-    // const location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const onLogoutClick = () => {
-        // console.log(location.pathname);
+    const onLogoutClick = (e) => {
+        e.preventDefault();
         sessionStorage.removeItem('token');
-        axios.defaults.headers.common['Authorization'] = '';
         setCurrentUser(null);
-        showToast('success', 'Logout successful!');
-        navigate("/campgrounds", { replace: true });
+        navigate(location.pathname || '/', {
+            state: {
+                showToast: {
+                    type: 'success',
+                    message: 'Logout successful!'
+                }
+            }
+        });
     };
-
-    // useEffect(() => {
-    //     console.log('currentUser updated:', currentUser);
-    // }, [currentUser]);
+    
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark py-3">
             <div className="container-fluid">

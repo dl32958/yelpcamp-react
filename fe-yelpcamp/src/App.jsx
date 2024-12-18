@@ -54,7 +54,7 @@ function App() {
   }
 
   return (
-    <AuthProvider>
+    // <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -83,7 +83,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    // </AuthProvider>
   )
 }
 

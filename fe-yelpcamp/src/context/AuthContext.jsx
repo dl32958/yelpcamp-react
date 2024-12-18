@@ -15,9 +15,9 @@ export const AuthProvider = ({children}) => {
             if (token) {
                 try {
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    const response = await axios.get('api/users/get-user');
-                    // console.log("response.data: ",response.data);
-                    const user = response.data;
+                    const response = await axios.get('/api/users/get-user');
+                    console.log("user response.data: ",response.data);
+                    const user = response.data.user;
                     setCurrentUser(user);
                 } catch (e) {
                     console.error(e);
@@ -33,6 +33,7 @@ export const AuthProvider = ({children}) => {
         }
         checkLogin();
     }, []);
+    console.log("currentUser: ",currentUser);
 
     return (
         <AuthContext.Provider value={{currentUser, setCurrentUser, checkInProgress}}>
