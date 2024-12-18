@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { showToast } from '../../utils/showToast';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const Navbar = () => {
     const { currentUser, setCurrentUser } = useAuth();
@@ -11,6 +12,7 @@ const Navbar = () => {
     const onLogoutClick = (e) => {
         e.preventDefault();
         sessionStorage.removeItem('token');
+        axios.defaults.headers.common['Authorization'] = null;
         setCurrentUser(null);
         navigate(location.pathname || '/', {
             state: {
@@ -55,10 +57,25 @@ const Navbar = () => {
                             </a>
                         ) : (
                             <>
-                                <a className="nav-link" href="/login">
+                                {/* navigate back to the previous page */}
+                                <a className="nav-link" href="/login" onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate('/login', {
+                                        state: {
+                                            from: location.pathname,
+                                        }
+                                    });
+                                }}>
                                     Login
                                 </a>
-                                <a className="nav-link" href="/register">
+                                <a className="nav-link" href="/register" onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate('/register', {
+                                        state: {
+                                            from: location.pathname,
+                                        }
+                                    });
+                                }}>
                                     Register
                                 </a>
                             </>

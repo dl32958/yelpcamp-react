@@ -8,6 +8,7 @@ import { getClassName } from '../../utils/GetClassName';
 import { ToastContainer } from 'react-toastify';
 import { showToast } from '../../utils/showToast';
 import { useAuth } from '../../context/AuthContext';
+import ReactStars from "react-rating-stars-component";
 
 const show = () => {
   const [campground, setCampground] = useState(null);
@@ -51,7 +52,7 @@ const show = () => {
     }
   };
 
-  const { register, handleSubmit, formState: { errors, isValid }, reset } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid }, reset, setValue, watch } = useForm({
     resolver: yupResolver(reviewSchema),
     mode: "onBlur",
     defaultValues: {
@@ -59,6 +60,12 @@ const show = () => {
       // body: 'Leave your review here'
     }
   });
+
+  const rating = watch("rating");
+
+  const ratingChanged = (newRating) => {
+    setValue("rating", newRating);
+  };
 
   const onReviewSubmit = async (data) => {
     const playload = { review: { ...data } };
@@ -123,13 +130,20 @@ const show = () => {
         <form onSubmit={handleSubmit(onReviewSubmit)} className='mb-3'>
           <div className='mb-3'>
             <label className='form-label' htmlFor="rating">Rating</label>
-            <input
+            {/* <input
               className={getClassName(errors.rating, 'form-range')}
               type="range"
               id="rating"
               {...register("rating")}
               min={1}
               max={5}
+            /> */}
+            <ReactStars
+              count={5}
+              value={rating}
+              onChange={ratingChanged}
+              size={30}
+              activeColor="#ffd700"
             />
             {errors.rating && <div className="invalid-feedback">{errors.rating.message}</div>}
           </div>
