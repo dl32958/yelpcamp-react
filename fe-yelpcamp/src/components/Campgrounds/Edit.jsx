@@ -8,11 +8,14 @@ import { campgroundSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
 import { ToastContainer } from 'react-toastify';
 import { showToast } from '../../utils/showToast';
+import { useAuth } from '../../context/AuthContext';
 
 const Edit = () => {
+    const { currentUser, checkInProgress } = useAuth();
+    const [campground, setCampground] = useState(null);
     const navigate = useNavigate();
-    const [campground, setCampground] = useState(undefined);
     const { id } = useParams();   // campground id
+    console.log(currentUser, checkInProgress);
 
     // setValue hook is used to set the value of the input field
     const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
@@ -26,6 +29,7 @@ const Edit = () => {
                 const response = await axios.get(`/api/campgrounds/${id}`);
                 const campgroundData = response.data.campground;
                 setCampground(campgroundData);
+                console.log(campground);
 
                 setValue('title', campgroundData.title);
                 setValue('location', campgroundData.location);
@@ -39,10 +43,28 @@ const Edit = () => {
         fetchCampground();
     }, []);
 
+    useEffect(() => {
+        if (!checkInProgress && currentUser && campground) {
+            if (currentUser.id !== campground.author._id.toString()) {
+                // console.log('You are not the author of this campground!');
+                navigate(`/campground/${id}`, {
+                    state: {
+                        showToast: {
+                            type: 'error',
+                            message: 'You are not the author of this campground!',
+                        }
+                    }
+                });
+            };
+        }
+    }, [campground, currentUser, checkInProgress]);
+
     const onFormSubmit = async (data) => {
-        const campground = { ...data };
         try {
-            const response = await axios.post(`/api/campgrounds/${id}/update`, { campground });
+            const payload = { campground: {...data} };
+            // console.log("payload", payload);
+            // console.log("data", data);
+            const response = await axios.post(`/api/campgrounds/${id}/update`, payload);
             if (response.status === 200) {
                 navigate(`/campground/${response.data}`, {
                     state: {

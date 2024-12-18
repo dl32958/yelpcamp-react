@@ -22,8 +22,8 @@ const ErrorPage = (props) => {
     return (
         <div className="row">
             <div className="col-6 offset-3">
-                <div class="alert alert-danger" role="alert">
-                    <h4 class="alert-heading">{props.title ?? error.data?.name ?? error.data?._message ?? error.message ?? null}</h4>
+                <div className="alert alert-danger" role="alert">
+                    <h4 className="alert-heading">{props.title ?? error.data?.name ?? error.data?._message ?? error.message ?? null}</h4>
                     <p>{getErrorText(error)}</p>
                     <hr />
                 </div>

@@ -7,12 +7,14 @@ import { reviewSchema } from '../../utils/Validation';
 import { getClassName } from '../../utils/GetClassName';
 import { ToastContainer } from 'react-toastify';
 import { showToast } from '../../utils/showToast';
+import { useAuth } from '../../context/AuthContext';
 
 const show = () => {
   const [campground, setCampground] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { currentUser, checkInProgress } = useAuth();
 
   const fetchCampground = async () => {
     const response = await axios.get(`/api/campgrounds/${id}`);
@@ -99,12 +101,14 @@ const show = () => {
             <div className="card-body">
               <h6 className="card-title">Rating: {review.rating}</h6>
               <p className="card-text">{review.body}</p>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => handleReviewDelete(review._id)}
-              >
-                Delete
-              </button>
+              {currentUser && currentUser?.id === review.author?._id && (
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleReviewDelete(review._id)}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -180,15 +184,19 @@ const show = () => {
                   <li className="list-group-item">${campground.price} / day </li>
                 </ul>
                 <div className="card-body">
-                  <a
-                    className="card-link btn btn-info me-2"
-                    href={`/campground/${id}/edit`}
-                  >
-                    Edit
-                  </a>
-                  <button className="btn btn-danger" onClick={handleDeleteClick}>
-                    Delete
-                  </button>
+                  {currentUser && currentUser?.id === campground?.author?._id && (
+                    <>
+                      <a
+                        className="card-link btn btn-info me-2"
+                        href={`/campground/${id}/edit`}
+                      >
+                        Edit
+                      </a>
+                      <button className="btn btn-danger" onClick={handleDeleteClick}>
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
