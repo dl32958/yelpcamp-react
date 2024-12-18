@@ -14,7 +14,8 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const path = location.state?.from ?? '/campgrounds';
-    console.log(path);
+    console.log("location", location);
+    console.log("path:", path);
 
     const { setCurrentUser } = useAuth();
 
