@@ -4,10 +4,10 @@ A Full-Stack MERN application that enables users to manage campground informatio
 
 ## Project Screen Shots
 
-![App Screenshot1](./ScreenShots/screen_shot_1.jpg)
-![App Screenshot2](./ScreenShots/screen_shot_2.jpg)
-![App Screenshot3](./ScreenShots/screen_shot_3.jpg)
-![App Screenshot4](./ScreenShots/screen_shot_4.jpg)
+![App Screenshot1](https://res.cloudinary.com/dvtqo8whc/image/upload/v1734637056/YelpCamp_screenshots/screenshot1_gjk23i.jpg)
+![App Screenshot2](https://res.cloudinary.com/dvtqo8whc/image/upload/v1734637056/YelpCamp_screenshots/screenshot2_qo7idv.jpg)
+![App Screenshot3](https://res.cloudinary.com/dvtqo8whc/image/upload/v1734637056/YelpCamp_screenshots/screenshot3_lteazj.jpg)
+![App Screenshot4](https://res.cloudinary.com/dvtqo8whc/image/upload/v1734637056/YelpCamp_screenshots/screenshot5_yuabdh.jpg)
 
 ## Features
 
