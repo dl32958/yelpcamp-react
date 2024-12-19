@@ -2,21 +2,9 @@ import express from 'express';
 import Campground from '../models/Campground.js';
 import Review from '../models/Review.js';
 import CatchAsync from '../utils/CatchAsync.js';
-import ExpressError from '../utils/ExpressError.js';
-import { reviewSchema } from '../schemas.js';
-import { isLoggedIn, isReviewAuthor } from '../middleware.js';
+import { isLoggedIn, isReviewAuthor, validateReview } from '../middleware.js';
 
 const router = express.Router({mergeParams: true});   // inherit params from parent
-
-const validateReview = (req, res, next) => {
-    const {error} = reviewSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(', ');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-};
 
 router.post('/', validateReview, isLoggedIn, CatchAsync(async (req, res) => {
     console.log(req.body);

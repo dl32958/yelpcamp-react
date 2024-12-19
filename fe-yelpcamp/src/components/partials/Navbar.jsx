@@ -23,6 +23,7 @@ const Navbar = () => {
             }
         });
     };
+    console.log("currentUser: ", currentUser);
     
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark py-3">
