@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from "react-hook-form"
@@ -11,24 +11,62 @@ import { showToast } from '../../utils/showToast';
 const New = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [fileNames, setFileNames] = useState([]);
+    const [fileObjects, setFileObjects] = useState([]);
 
     useEffect(() => {
         if (location?.state?.showToast) {
             const { type, message } = location.state.showToast;
             showToast(type, message);
         }
-    }, []);
+    }, [location]);
 
     const { register, handleSubmit, formState: { errors, isValid } } = useForm({
         resolver: yupResolver(campgroundSchema),
         mode: "onBlur",
     });
 
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        console.log(files);
+
+        const newFiles = files.filter(
+            (file) => !fileNames.includes(file.name)
+        )
+        console.log("new file:", newFiles);
+
+        setFileNames((prev) => [...prev, ...newFiles.map((file) => file.name)]);
+        setFileObjects((prev) => [...prev, ...newFiles]);
+    };
+
+    const removeFile = (index) => {
+        setFileObjects((prev) => prev.filter((_, i) => i !== index));
+        setFileNames((prev) => prev.filter((_, i) => i !== index));
+    };
+
     const onFormSubmit = async (data) => {
         console.log(data);
+        console.log(fileObjects);
+        if (fileObjects.length === 0) {
+            showToast('error', 'Please select at least one image');
+            return;
+        }
         try {
-            const playload = { campground: { ...data } };
-            const response = await axios.post('/api/campgrounds/new', playload);
+            const formData = new FormData();
+            formData.append('campground[title]', data.title);
+            formData.append('campground[location]', data.location);
+            formData.append('campground[price]', data.price);
+            formData.append('campground[description]', data.description);
+            fileObjects.forEach((file) => {
+                formData.append("image", file);
+            });
+            // const playload = { campground: { ...data } };
+            const response = await axios.post('/api/campgrounds/new', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response);
             if (response.status === 200) {
                 // if create success, redirect and add state to showToast
                 navigate(`/campground/${response.data}`, {
@@ -75,16 +113,53 @@ const New = () => {
                     {errors.location && <div className="invalid-feedback">{errors.location.message}</div>}
                 </div>
                 <div className='mb-3'>
-                    <label className='form-label' htmlFor="image">Image</label>
-                    <input
-                        className={getClassName(errors.image)}
-                        type="text"
-                        id="image"
-                        name='image'
-                        {...register("image")}
-                    />
-                    {errors.image && <div className="invalid-feedback">{errors.image.message}</div>}
+                    <label className='form-label'>Images</label>
+                    <div className="input-group">
+                        <label
+                            htmlFor="images"
+                            className="input-group-text btn btn-secondary"
+                            style={{ cursor: 'pointer' }}
+                        >
+                            Choose Files
+                        </label>
+                        <input
+                            type="file"
+                            id="images"
+                            name="images"
+                            multiple
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
+                        />
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder={fileNames.length > 0 ? fileNames[fileNames.length - 1] : "No files selected"}
+                            readOnly
+                        />
+                    </div>
+                    {fileNames.length > 0 ? (
+                        <div className="mt-2">
+                            {/* <h6>Selected Files:</h6> */}
+                            <ul>
+                                {fileNames.map((fileName, index) => (
+                                    <li key={index}>
+                                        {fileName}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-danger px-1 py-1 border-start me-2"
+                                            onClick={() => removeFile(index)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="mt-2 text-muted">No files selected</div>
+                    )}
                 </div>
+
                 <div className='mb-3'>
                     <label className='form-label' htmlFor="price">Price</label>
                     <div className="input-group">

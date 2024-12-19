@@ -15,7 +15,11 @@ const Edit = () => {
     const [campground, setCampground] = useState(null);
     const navigate = useNavigate();
     const { id } = useParams();   // campground id
-    console.log(currentUser, checkInProgress);
+    // console.log(currentUser, checkInProgress);
+    const [existingImages, setExistingImages] = useState([]);
+    const [newImages, setNewImages] = useState([]);
+    const [deletedImages, setDeletedImages] = useState([]);
+    const [initialImages, setInitialImages] = useState([]);
 
     // setValue hook is used to set the value of the input field
     const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
@@ -28,12 +32,16 @@ const Edit = () => {
             try {
                 const response = await axios.get(`/api/campgrounds/${id}`);
                 const campgroundData = response.data.campground;
+                console.log("campgroundData:", campgroundData);
                 setCampground(campgroundData);
                 console.log(campground);
 
+                const initialImageFilenames = campgroundData.images.map((image) => image.filename);
+                setExistingImages(initialImageFilenames); // ['image1.jpg', 'image2.jpg'] maintain this array for displaying the image name list
+                setInitialImages(initialImageFilenames);
                 setValue('title', campgroundData.title);
                 setValue('location', campgroundData.location);
-                setValue('image', campgroundData.image);
+                // setValue('image', campgroundData.image);
                 setValue('price', campgroundData.price);
                 setValue('description', campgroundData.description);
             } catch (e) {
@@ -46,7 +54,6 @@ const Edit = () => {
     useEffect(() => {
         if (!checkInProgress && currentUser && campground) {
             if (currentUser.id !== campground.author._id.toString()) {
-                // console.log('You are not the author of this campground!');
                 navigate(`/campground/${id}`, {
                     state: {
                         showToast: {
@@ -59,12 +66,47 @@ const Edit = () => {
         }
     }, [campground, currentUser, checkInProgress]);
 
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        console.log("upload files",files);
+
+        setNewImages((prev) => [...prev, ...files]);
+        setExistingImages((prev) => [...prev, ...files.map((file) => file.name)]);
+        e.target.value = null;
+    };
+    const removeExistingImage = (filename) => {
+        if (initialImages.includes(filename)) {
+            setDeletedImages((prev) => [...prev, filename]);
+        }
+        setExistingImages((prev) => prev.filter((image) => image !== filename));
+        setNewImages((prev) => prev.filter((file) => file.name !== filename));
+    };
+
     const onFormSubmit = async (data) => {
         try {
-            const payload = { campground: {...data} };
-            // console.log("payload", payload);
-            // console.log("data", data);
-            const response = await axios.post(`/api/campgrounds/${id}/update`, payload);
+            const formData = new FormData();
+            formData.append('campground[title]', data.title);
+            formData.append('campground[location]', data.location);
+            formData.append('campground[price]', data.price);
+            formData.append('campground[description]', data.description);
+
+            newImages.forEach((file) => {
+                formData.append('images', file);
+            });
+            deletedImages.forEach((image) => {
+                formData.append('deleteImages[]', image);
+            });
+
+            console.log('FormData contents:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
+            }
+
+            const response = await axios.post(`/api/campgrounds/${id}/update`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+            });
             if (response.status === 200) {
                 navigate(`/campground/${response.data}`, {
                     state: {
@@ -107,16 +149,53 @@ const Edit = () => {
                     />
                     {errors.location && <div className="invalid-feedback">{errors.location.message}</div>}
                 </div>
+                {/* Images */}
                 <div className='mb-3'>
-                    <label className='form-label' htmlFor="image">Image</label>
-                    <input
-                        className={getClassName(errors.image)}
-                        type="text"
-                        id="image"
-                        name='image'
-                        {...register("image")}
-                    />
-                    {errors.image && <div className="invalid-feedback">{errors.image.message}</div>}
+                    <label className='form-label'>Images</label>
+                    <div className="input-group">
+                        <label
+                            htmlFor="images"
+                            className="input-group-text btn btn-secondary"
+                            style={{ cursor: 'pointer' }}
+                        >
+                            Choose Files
+                        </label>
+                        <input
+                            type="file"
+                            id="images"
+                            name="images"
+                            multiple
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
+                        />
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder={existingImages.length > 0 ? existingImages[existingImages.length - 1] : "No files selected"}
+                            readOnly
+                        />
+                    </div>
+                    {existingImages.length > 0 ? (
+                        <div className="mt-2">
+                            {/* <h6>Selected Files:</h6> */}
+                            <ul>
+                                {existingImages.map((fileName, index) => (
+                                    <li key={index}>
+                                        {fileName}
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-danger px-1 py-1 border-start me-2"
+                                            onClick={() => removeExistingImage(fileName)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="mt-2 text-muted">No files selected</div>
+                    )}
                 </div>
                 <div className='mb-3'>
                     <label className='form-label' htmlFor="price">Price</label>

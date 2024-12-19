@@ -130,14 +130,6 @@ const show = () => {
         <form onSubmit={handleSubmit(onReviewSubmit)} className='mb-3'>
           <div className='mb-3'>
             <label className='form-label' htmlFor="rating">Rating</label>
-            {/* <input
-              className={getClassName(errors.rating, 'form-range')}
-              type="range"
-              id="rating"
-              {...register("rating")}
-              min={1}
-              max={5}
-            /> */}
             <ReactStars
               count={5}
               value={rating}
@@ -188,7 +180,29 @@ const show = () => {
           <div className="row">
             <div className="col-6">
               <div className="card mb-3">
-                <img src={campground.image} className="card-img-top" alt="..." />
+                {/* <img src={campground.image} className="card-img-top" alt="..." /> */}
+                {/* display images */}
+                <div id="campgroundcarousel" className="carousel slide" data-bs-ride="carousel">
+                  <div className="carousel-inner">
+                    {campground.images.map((img, idx) => (
+                      <div key={idx} className={"carousel-item" + (idx === 0 ? " active" : "")}>
+                        <img src={img.url} className="d-block w-100" alt="" />
+                      </div>
+                    ))}
+                  </div>
+                  {campground.images.length > 1 ? (
+                    <>
+                      <button className="carousel-control-prev" type="button" data-bs-target="#campgroundcarousel" data-bs-slide="prev">
+                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span className="visually-hidden">Previous</span>
+                      </button>
+                      <button className="carousel-control-next" type="button" data-bs-target="#campgroundcarousel" data-bs-slide="next">
+                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span className="visually-hidden">Next</span>
+                      </button>
+                    </>
+                  ) : null}
+                </div>
                 <div className="card-body">
                   <h5 className="card-title">{campground.title}</h5>
                   <p className="card-text">{campground.description}</p>

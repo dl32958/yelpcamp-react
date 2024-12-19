@@ -7,8 +7,8 @@ export const campgroundSchema = Yup.object().shape({
     .required("Title is required"),
   location: Yup.string()
     .required("Location is required"),
-  image: Yup.string()
-    .required("Image is required"),
+  // image: Yup.string()
+  //   .required("Image is required"),
   price: Yup.number()
     .typeError("Price must be a number")
     .required("Price is required")

@@ -46,7 +46,7 @@ const CampgroundList = () => {
                         <div className="card mb-3" key={index}>
                             <div className='row'>
                                 <div className="col-md-4">
-                                    <img src={campground.image} alt="" className="img-fluid" />
+                                    <img src={campground.images[0].url} alt="" className="img-fluid" />
                                 </div>
                                 <div className="col-md-8">
                                     <div className="card-body">
