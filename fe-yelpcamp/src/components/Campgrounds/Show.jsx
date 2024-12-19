@@ -186,7 +186,12 @@ const show = () => {
                   <div className="carousel-inner">
                     {campground.images.map((img, idx) => (
                       <div key={idx} className={"carousel-item" + (idx === 0 ? " active" : "")}>
-                        <img src={img.url} className="d-block w-100" alt="" />
+                        <img 
+                          src={img.url} 
+                          className="d-block w-100" 
+                          alt="" 
+                          style={{ objectFit: 'cover', aspectRatio: '7/5' }}
+                        />
                       </div>
                     ))}
                   </div>
