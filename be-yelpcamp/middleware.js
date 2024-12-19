@@ -6,6 +6,26 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRETE = process.env.JWT_SECRETE || "thisisnotagoodsecrete";
 
+export const validateCampground = (req, res, next) => {
+    const {error} = campgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+};
+
+export const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+};
+
 export const isLoggedIn = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];

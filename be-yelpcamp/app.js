@@ -6,6 +6,11 @@ import campgroundRoutes from './routes/campgrounds.js';
 import reviewRoutes from './routes/reviews.js';
 import userRoutes from './routes/users.js';
 import session from 'express-session';
+import dotenv from 'dotenv';
+
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config();
+}
 
 const app = express();
 const corsOptions = {
