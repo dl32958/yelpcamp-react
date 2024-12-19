@@ -43,11 +43,28 @@ A Full-Stack MERN application that enables users to manage campground informatio
 - Joi
 
 ## Installation and Setup Instructions
+1. Setup the development environment
+  - NodeJS
+  - MongoDB
+  - Git Bash
+2. Install the dependencies
+  - `git clone` the project repository
+  - `cd be-yelpcamp` + `npm install` will install the backend's dependencies
+  - `cd fe-yelpcamp` + `npm install` will install the frontend's dependencies
+3. Start server and client in development mode
+  - `cd be-yelpcamp` + `nodemon app.js`
+  - `cd fe-yelpcamp` + `npm run dev`
+4. To run this project, you will need to add the following environment variables to your `.env` file in be-yelpcamp
+  - `JWT_SECRET`
+  - `CLOUDINARY_CLOUD_NAME`
+  - `CLOUDINARY_KEY`
+  - `CLOUDINARY_SECRET`
+  - `DB_URL`
 
 ## Behind the Rebuild
 
-After completing the renowned Web Development Bootcamp by Colt Steele and gaining hands-on experience as a SDE intern this past summer, I wanted to apply the new tech stack I had learned to one of my favorite projects—YelpCamp. This gave me a great opportunity to practice my web development skills. And so, YelpCamp React was born.
+After completing the renowned <a href="https://www.udemy.com/course/the-web-developer-bootcamp/">Web Development Bootcamp</a> by Colt Steele and gaining hands-on experience as a SDE intern this past summer, I wanted to apply the new tech stack I had learned to one of my favorite projects—YelpCamp. This gave me a great opportunity to practice my web development skills. And so, YelpCamp React was born.
 
-The most challenging parts for me were implementing authentication and authorization, managing image uploads, and designing efficient data structures. Some aspects required significant time debugging the data transmission between the front-end and back-end to ensure seamless functionality. Additionally, incorporating newly learned technologies also posed challenges, such as using the useContext hook for authentication state management, which I learned through Meta Front-End Developer Professional Certificate on Coursera, and implementing react-toastify to handle flash messages on the front end in response to user actions.
+The most challenging parts for me were implementing authentication and authorization, managing image uploads, and designing efficient data structures. Some aspects required significant time debugging the data transmission between the front-end and back-end to ensure seamless functionality. Additionally, incorporating newly learned technologies also posed challenges, such as using the useContext hook for authentication state management, which I learned through <a href="https://www.coursera.org/professional-certificates/meta-front-end-developer">Meta Front-End Developer Professional Certificate</a> on Coursera, and implementing react-toastify to handle flash messages on the front end in response to user actions.
 
-However, this journey of overcoming challenges was incredibly meaningful to me. I experimented with new technologies, implemented Git version control, and set up CI/CD pipelines to streamline the development and deployment process. The independent development process gave me a deeper understanding of full-stack development. It enhanced my ability to tackle complex problems and strengthened my confidence in building robust and scalable web applications.
+However, this journey of overcoming challenges was incredibly meaningful to me. I experimented with new technologies, implemented Git version control, and set up CI/CD pipelines to streamline the development and deployment process. The independent development process also gave me a deeper understanding of full-stack development. It enhanced my ability to tackle complex problems and strengthened my confidence in building robust and scalable web applications.
