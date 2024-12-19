@@ -57,11 +57,11 @@ const LandingPage = () => {
             <br />
             Join us to discover, review, and share your favorite camping spots with like-minded adventurers.
           </p>
-          <a href="/campgrounds" className="btn btn-lg btn-secondary bg-white">
+          <a href="/campgrounds" className="btn btn-lg btn-light bg-white">
             View Campgrounds
           </a>
         </main>
-        <footer className="mt-auto text-white-50">@2024</footer>
+        <footer className="mt-auto text-sm-center text-secondary">&copy; YelpCamp 2024</footer>
       </div>
     </div>
   )

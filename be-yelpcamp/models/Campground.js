@@ -3,28 +3,17 @@ import Review from "./Review.js";
 
 const Schema = mongoose.Schema; 
 
-const imageSchema = new Schema({
+const ImageSchema = new Schema({
     url: String,
     filename: String
 });
 
 const CampgroundSchema = new Schema({
     title: String,
-    // geometry: {
-    //     type: {
-    //         type: String,
-    //         enum: ['Point'],
-    //         required: true
-    //     },
-    //     coordinates: {
-    //         type: [Number],
-    //         required: true
-    //     }
-    // },
     price: Number,
     description: String,
     location: String,
-    images: [imageSchema],
+    images: [ImageSchema],
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'
