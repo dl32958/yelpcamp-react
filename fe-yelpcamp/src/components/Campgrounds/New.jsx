@@ -58,9 +58,8 @@ const New = () => {
             formData.append('campground[price]', data.price);
             formData.append('campground[description]', data.description);
             fileObjects.forEach((file) => {
-                formData.append("image", file);
+                formData.append("images", file);
             });
-            // const playload = { campground: { ...data } };
             const response = await axios.post('/api/campgrounds/new', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -68,7 +67,6 @@ const New = () => {
             });
             console.log(response);
             if (response.status === 200) {
-                // if create success, redirect and add state to showToast
                 navigate(`/campground/${response.data}`, {
                     replace: true,
                     state: {
@@ -140,13 +138,18 @@ const New = () => {
                     {fileNames.length > 0 ? (
                         <div className="mt-2">
                             {/* <h6>Selected Files:</h6> */}
-                            <ul>
+                            <ul
+                            style={{paddingLeft: '0', listStyleType: "disc"}}
+                            >
                                 {fileNames.map((fileName, index) => (
-                                    <li key={index}>
-                                        {fileName}
+                                    <li key={index} className="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span style={{ marginRight: "8px", color: "black" }}>•</span>
+                                            <span>{fileName}</span>
+                                        </div>
                                         <button
                                             type="button"
-                                            className="btn btn-sm btn-danger px-1 py-1 border-start me-2"
+                                            className="btn btn-sm btn-danger px-1 py-0 border-start"
                                             onClick={() => removeFile(index)}
                                         >
                                             Remove
@@ -186,11 +189,11 @@ const New = () => {
                     />
                     {errors.description && <div className="invalid-feedback">{errors.description.message}</div>}
                 </div>
-                <div className="card-body mt-3">
-                    <button className='btn btn-success me-2' disabled={!isValid}>Submit</button>
+                <div className="mb-3">
+                    <button className='btn btn-success w-100 mb-1' disabled={!isValid}>Submit</button>
                     <a
                         href="/campgrounds"
-                        className='card-link btn btn-secondary'
+                        className='card-link btn btn-secondary w-100'
                     >
                         Cancel
                     </a>
@@ -213,9 +216,13 @@ const New = () => {
                 pauseOnHover
             />
             <div className='row'>
-                <h1 className='text-center'>Add Campground</h1>
-                <div className="col-6 offset-3">
-                    <NewForm />
+                <h1 className='text-center'>New Campground</h1>
+                <div class="col-md-6 offset-md-3">
+                    <div className="card shadow">
+                        <div className="card-body">
+                        <NewForm />
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

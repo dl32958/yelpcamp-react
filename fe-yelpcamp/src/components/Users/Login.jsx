@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { showToast } from '../../utils/showToast';
 import { useAuth } from '../../context/AuthContext';
 import { jwtDecode } from 'jwt-decode';
+import loginPic from "../../assets/login_pic.jpg";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -72,6 +73,7 @@ const Login = () => {
                         className={getClassName(errors.email)}
                         type="email"
                         id="email"
+                        autoFocus
                         {...register('email')}
                     />
                     {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
@@ -86,10 +88,10 @@ const Login = () => {
                     />
                     {errors.password && <div className="invalid-feedback">{errors.password.message}</div>}
                 </div>
-                <div className="card-body mt-3">
-                    <button className='btn btn-success me-2' disabled={!isValid}>Login</button>
+                <div className="mb-3">
+                    <button className='btn btn-success mb-1 w-100' disabled={!isValid}>Login</button>
                     <button
-                        className='btn btn-secondary'
+                        className='btn btn-secondary w-100'
                         onClick={() => navigate(path)}
                     >
                         Cancel
@@ -112,12 +114,17 @@ const Login = () => {
                 draggable
                 pauseOnHover
             />
-            <div className='row'>
-                <h1 className='text-center'>
-                    Login
-                </h1>
-                <div className="col-6 offset-3">
-                    <LoginForm />
+            <div className="container justify-content-center align-items-center mt-1">
+                <div className="row">
+                    <div className="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+                        <div className="card shadow">
+                            <img src={loginPic} alt="" className="card-img-top" />
+                            <div className="card-body">
+                                <h5 className="card-title">Login</h5>
+                                <LoginForm />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

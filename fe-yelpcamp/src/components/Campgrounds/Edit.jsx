@@ -68,7 +68,7 @@ const Edit = () => {
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        console.log("upload files",files);
+        console.log("upload files", files);
 
         setNewImages((prev) => [...prev, ...files]);
         setExistingImages((prev) => [...prev, ...files.map((file) => file.name)]);
@@ -178,13 +178,18 @@ const Edit = () => {
                     {existingImages.length > 0 ? (
                         <div className="mt-2">
                             {/* <h6>Selected Files:</h6> */}
-                            <ul>
+                            <ul
+                                style={{ paddingLeft: '0', listStyleType: "disc" }}
+                            >
                                 {existingImages.map((fileName, index) => (
-                                    <li key={index}>
-                                        {fileName}
+                                    <li key={index} className="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span style={{ marginRight: "8px", color: "black" }}>•</span>
+                                            <span>{fileName}</span>
+                                        </div>
                                         <button
                                             type="button"
-                                            className="btn btn-sm btn-danger px-1 py-1 border-start me-2"
+                                            className="btn btn-sm btn-danger px-1 py-0 border-start me-2"
                                             onClick={() => removeExistingImage(fileName)}
                                         >
                                             Remove
@@ -222,15 +227,15 @@ const Edit = () => {
                         rows="5"
                     />
                     {errors.description && <div className="invalid-feedback">{errors.description.message}</div>}
-                    <div className="card-body mt-3">
-                        <button className='btn btn-success me-2' disabled={!isValid}>Submit</button>
-                        <a
-                            href={`/campground/${id}`}
-                            className='card-link btn btn-secondary'
-                        >
-                            Cancel
-                        </a>
-                    </div>
+                </div>
+                <div className="mb-3">
+                    <button className='btn btn-success w-100 mb-1' disabled={!isValid}>Submit</button>
+                    <a
+                        href={`/campground/${id}`}
+                        className='card-link btn btn-secondary w-100'
+                    >
+                        Cancel
+                    </a>
                 </div>
             </form>
         )
@@ -253,7 +258,11 @@ const Edit = () => {
                 <div className='row'>
                     <h1 className='text-center'>Edit Campground</h1>
                     <div className="col-6 offset-3">
-                        <EditForm />
+                        <div className="card shadow">
+                            <div className="card-body">
+                                <EditForm />
+                            </div>
+                        </div>
                     </div>
                 </div>
             ) : (null)}

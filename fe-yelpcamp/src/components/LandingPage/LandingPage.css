@@ -30,13 +30,13 @@
     border-bottom-color:white;
 }
 
-.btn-secondary, .btn-secondary:hover{
+.btn-light, .btn-light:hover{
     color: #333;
     text-shadow: none;
 transition: transform 200ms ease-in-out;
 font-weight: 700
 }
-.btn-secondary:hover{
+.btn-light:hover{
 color:black;
 text-shadow:none;
 transform:translateY(-0.1em);
