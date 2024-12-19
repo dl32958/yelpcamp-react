@@ -4,6 +4,10 @@ A Full-Stack MERN application that enables users to manage campground informatio
 
 ## Project Screen Shots
 
+![App Screenshot1](./ScreenShots/screen_shot_1.jpg)
+![App Screenshot2](./ScreenShots/screen_shot_2.jpg)
+![App Screenshot3](./ScreenShots/screen_shot_3.jpg)
+![App Screenshot4](./ScreenShots/screen_shot_4.jpg)
 
 ## Features
 
