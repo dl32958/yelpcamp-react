@@ -18,7 +18,6 @@ A Full-Stack MERN application that enables users to manage campground informatio
   - Create, edit and delete posts and comments
   - Upload campground photos
   - Browse through a list of campgrounds
-  - Search existing campgrounds
 * Manage user account with basic functionalities
   - Flash messages responding to users' interaction with the app
   - Responsive web design
