@@ -5,7 +5,6 @@ import ExpressError from './utils/ExpressError.js';
 import campgroundRoutes from './routes/campgrounds.js';
 import reviewRoutes from './routes/reviews.js';
 import userRoutes from './routes/users.js';
-import session from 'express-session';
 import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -19,6 +18,7 @@ const corsOptions = {
 };
 
 // mongoDB
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelpcamp';
 mongoose.connect('mongodb://localhost:27017/yelpcamp');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'database connection error:'));
@@ -30,23 +30,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// const sessionConfig = {
-//     secret: 'thisisnotagoodsecret',
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//         httpOnly: true,
-//         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-//         maxAge: 1000 * 60 * 60 * 24 * 7,
-//     }
-// };
-// app.use(session(sessionConfig));
-
 // routes
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
 app.use('/users', userRoutes);
-
 
 app.get('/', (req, res) => {
     res.send('express app is answering');
